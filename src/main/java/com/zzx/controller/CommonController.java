@@ -24,10 +24,7 @@ public class CommonController {
      */
     @PostMapping("/upload")
     public R<String> upload(MultipartFile file) throws IOException {
-        log.info("文件上传,{}",file);
-        // 调用oss工具上传
-        String url = aliOSSUtils.upload(file);
-        log.info("文件上传完成,文件访问url为: {}",file);
-        return R.success(url);
+
+        return null;
     }
 }
