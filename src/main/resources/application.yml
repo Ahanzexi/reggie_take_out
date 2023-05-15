@@ -23,12 +23,12 @@ mybatis-plus:
   mapper-locations: classpath:mapper/*xml
   type-aliases-package: com.niepan.pojo
 # 阿里云OSS
-#aliyun:
-#  oss:
-#    endpoint: https://oss-cn-beijing.aliyuncs.com
-#    accessKeyId: LTAI5t9kHwZCcPDsMoykQAPu
-#    accessKeySecret: AXXAvZriCjyEAKk43hQLdwFU47eXos
-#    bucketName: zzx-talis
+aliyun:
+  oss:
+    endpoint: https://oss-cn-beijing.aliyuncs.com
+    accessKeyId: LTAI5t9kHwZCcPDsMoykQAPu
+    accessKeySecret: AXXAvZriCjyEAKk43hQLdwFU47eXos
+    bucketName: zzx-talis
 
 # 服务器配置
 server:

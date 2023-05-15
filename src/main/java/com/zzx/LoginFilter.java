@@ -49,7 +49,8 @@ public class LoginFilter implements Filter {
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                "/common/**"
         };
         for (String url:urls) {
             boolean m = PATH_MATCHER.match(url,uri);
