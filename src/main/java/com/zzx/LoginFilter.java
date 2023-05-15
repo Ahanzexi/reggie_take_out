@@ -40,7 +40,7 @@ public class LoginFilter implements Filter {
             return;
         }
         // 4.如果没有登录,通过输出流向客户端响应数据,跳转到登录界面
-        log.info("没有登录,跳转到登录界面");
+        log.info("{} 没有登录,跳转到登录界面",uri);
         resp.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
     }
     private boolean check(String uri){

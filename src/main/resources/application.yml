@@ -10,11 +10,15 @@ spring:
     multipart:
       max-file-size: 20MB
       max-request-size: 100MB
+  application:
+    # 应用名称
+    name: reggie
 
 # mybatis配置
-mybatis:
+mybatis-plus:
   configuration:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    # 将驼峰命名与下划线命名相互转换
     map-underscore-to-camel-case: true
   mapper-locations: classpath:mapper/*xml
   type-aliases-package: com.niepan.pojo
@@ -34,4 +38,4 @@ server:
 logging:
   level:
     org.springframework.jdbc.support.JdbcTransactionManager: debug
-#
+#应用名称name

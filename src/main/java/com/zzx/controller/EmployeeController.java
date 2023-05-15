@@ -12,6 +12,7 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
+import java.security.PublicKey;
 import java.time.LocalDateTime;
 
 @Slf4j
@@ -20,6 +21,33 @@ import java.time.LocalDateTime;
 public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
+
+
+    @GetMapping("/{id}")
+    public R<Employee> getById(@PathVariable Long id){
+        log.info("根据Id查询员工信息" );
+        Employee employee = employeeService.getById(id);
+        if(employee!=null){
+            return R.success(employee);
+        }else{
+            return R.error("没有查询到该员工的信息");
+        }
+    }
+
+    /**
+     * 根据Id修改员工信息
+     * @param employee
+     * @return
+     */
+    @PutMapping()
+    public R<String> update(HttpServletRequest request,@RequestBody Employee employee){
+        log.info("开始更新操作: {}", employee.toString());
+        final long userId = (long) request.getSession().getAttribute("employee");
+//        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setUpdateUser(userId);
+        employeeService.updateById(employee);
+        return R.success("员工信息修改成功");
+    }
 
     /**
      * 新增员工
@@ -32,11 +60,11 @@ public class EmployeeController {
         // 设置初始密码为123456
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         // 设置入职时间,与修改时间
-        employee.setCreateTime(LocalDateTime.now());
-        employee.setUpdateTime(LocalDateTime.now());
+//        employee.setCreateTime(LocalDateTime.now());
+//        employee.setUpdateTime(LocalDateTime.now());
         final long id = (long) req.getSession().getAttribute("employee");
-        employee.setCreateUser(id);
-        employee.setUpdateUser(id);
+//        employee.setCreateUser(id);
+//        employee.setUpdateUser(id);
         employeeService.save(employee);
         return R.success("新增员工成功");
     }
