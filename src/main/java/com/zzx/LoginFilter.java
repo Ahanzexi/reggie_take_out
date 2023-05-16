@@ -33,12 +33,19 @@ public class LoginFilter implements Filter {
             filterChain.doFilter(req,resp);
             return;
         }
-        // 3.判断是否登录
+        // 3-1.判断管理端是否登录
         if(req.getSession().getAttribute("employee")!=null){
             log.info("用户已经登录,用户id为:{}",req.getSession().getAttribute("employee"));
             filterChain.doFilter(req,resp);
             return;
         }
+        // 3-2.判断用户端是否登录
+        if(req.getSession().getAttribute("user")!=null){
+            log.info("用户已经登录,用户id为:{}",req.getSession().getAttribute("user"));
+            filterChain.doFilter(req,resp);
+            return;
+        }
+
         // 4.如果没有登录,通过输出流向客户端响应数据,跳转到登录界面
         log.info("{} 没有登录,跳转到登录界面",uri);
         resp.getWriter().write(JSON.toJSONString(R.error("NOTLOGIN")));
@@ -50,7 +57,9 @@ public class LoginFilter implements Filter {
                 "/employee/logout",
                 "/backend/**",
                 "/front/**",
-                "/common/**"
+                "/common/**",
+                "/user/sendMsg",
+                "/user/login"
         };
         for (String url:urls) {
             boolean m = PATH_MATCHER.match(url,uri);
