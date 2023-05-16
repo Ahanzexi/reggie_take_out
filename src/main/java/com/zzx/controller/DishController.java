@@ -141,4 +141,17 @@ public class DishController {
         return R.success(status==0?"已禁售":"已启售");
     }
 
+    @GetMapping("/list")
+    public R<List<Dish>> list(Dish dish){
+        final LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        // 根据分类查询
+        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+        // 仅查询起售状态的菜品
+        queryWrapper.eq(Dish::getStatus,1);
+        // 排序
+        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        final List<Dish> list = dishService.list(queryWrapper);
+        return R.success(list);
+    }
+
 }
