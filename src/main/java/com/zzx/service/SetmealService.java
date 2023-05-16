@@ -5,6 +5,8 @@ import com.zzx.dto.SetmealDto;
 import com.zzx.entity.Dish;
 import com.zzx.entity.Setmeal;
 
+import java.util.List;
+
 public interface SetmealService extends IService<Setmeal> {
 
     /**
@@ -13,4 +15,9 @@ public interface SetmealService extends IService<Setmeal> {
      */
     void saveWithDish(SetmealDto setmealDto);
 
+    void deleteWithDish(List<Long> ids);
+
+    SetmealDto getByIdWithDish(Long id);
+
+    void updateWithDish(SetmealDto setmealDto);
 }

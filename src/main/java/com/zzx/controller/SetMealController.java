@@ -3,8 +3,10 @@ package com.zzx.controller;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.zzx.common.R;
+import com.zzx.dto.DishDto;
 import com.zzx.dto.SetmealDto;
 import com.zzx.entity.Category;
+import com.zzx.entity.Dish;
 import com.zzx.entity.Setmeal;
 import com.zzx.service.CategoryService;
 import com.zzx.service.SetmealService;
@@ -77,5 +79,56 @@ public class SetMealController {
         return R.success(pageInfo);
     }
 
+    /**
+     * 删除套餐
+     * @param ids
+     * @return
+     */
+    @DeleteMapping
+    public R<String> delete(@RequestParam List<Long> ids){
+        setmealService.deleteWithDish(ids);
+        return R.success("套餐删除成功!");
+    }
 
+    /**
+     * 修改出售状态
+     * @param ids
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> status(@RequestParam List<Long> ids, @PathVariable Integer status){
+        List<Setmeal> setmealList= ids.stream().map((id)->{
+            final Setmeal d = new Setmeal();
+            d.setStatus(status);
+            d.setId(id);
+            return d;
+        }).collect(Collectors.toList());
+        setmealService.updateBatchById(setmealList);
+        return R.success(status==0?"已禁售":"已启售");
+    }
+
+    /**
+     * 编辑回显,根据id查询商品
+     * @param id
+     * @return
+     */
+    @GetMapping("/{id}")
+    public R<SetmealDto> get(@PathVariable Long id){
+        final SetmealDto setmealDto = setmealService.getByIdWithDish(id);
+        return R.success(setmealDto);
+    }
+
+
+    /**
+     * 修改菜品
+     * @param setmealDto
+     * @return
+     */
+    @PutMapping
+    public R<String> update(@RequestBody SetmealDto setmealDto){
+        log.info("修改菜品 {}",setmealDto);
+        setmealService.updateWithDish(setmealDto);
+        return R.success("修改菜品成功!");
+    }
 }

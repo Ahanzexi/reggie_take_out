@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -96,7 +97,6 @@ public class DishController {
         final DishDto dishDto = dishService.getByIdWithFlavor(id);
         return R.success(dishDto);
     }
-    /*D 404*/
 
     /**
      * 修改菜品
@@ -116,11 +116,9 @@ public class DishController {
      * @return
      */
     @DeleteMapping
-    public R<String> delete(Long[] ids){
+    public R<String> delete(@RequestParam List<Long> ids){
         log.info("删除菜品 {}",ids);
-        for (Long id:ids) {
-            dishService.deleteWithFlavor(id);
-        }
+        dishService.deleteWithFlavor(ids);
         return R.success("删除菜品成功");
     }
 
@@ -131,13 +129,14 @@ public class DishController {
      * @return
      */
     @PostMapping("/status/{status}")
-    public R<String> status(Long[] ids, @PathVariable Integer status){
-        final Dish dish = new Dish();
-        for (Long id:ids) {
-            dish.setStatus(status);
-            dish.setId(id);
-            dishService.updateById(dish);
-        }
+    public R<String> status(@RequestParam List<Long> ids, @PathVariable Integer status){
+        List<Dish> dishList= ids.stream().map((id)->{
+            final Dish d = new Dish();
+            d.setStatus(status);
+            d.setId(id);
+            return d;
+        }).collect(Collectors.toList());
+        dishService.updateBatchById(dishList);
         return R.success(status==0?"已禁售":"已启售");
     }
 

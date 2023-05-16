@@ -2,6 +2,7 @@ package com.zzx.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.zzx.common.CustomException;
 import com.zzx.dto.DishDto;
 import com.zzx.entity.Category;
 import com.zzx.entity.Dish;
@@ -73,12 +74,24 @@ public class DishServiceImpl extends ServiceImpl<DishMapper, Dish> implements Di
 
     @Override
     @Transactional
-    public void deleteWithFlavor(Long id) {
-        // 删除基本信息
-        this.removeById(id);
-        // 删除口味信息
-        final LambdaQueryWrapper<DishFlavor> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(DishFlavor::getDishId,id);
-        dishFlavorService.remove(queryWrapper);
+    public void deleteWithFlavor(List<Long> ids) {
+        // 查询菜品状态,是否可以删除
+        final LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.in(Dish::getId,ids );
+        queryWrapper.eq(Dish::getStatus,1);
+        final int count = this.count(queryWrapper);
+        if(count>0) {
+            // 如果不能删除,抛出业务异常
+            throw new CustomException("删除失败,该菜品任在售");
+        }
+        // 删除
+        for (Long id:ids) {
+            // 删除基本信息
+            this.removeById(id);
+            // 删除口味信息
+            final LambdaQueryWrapper<DishFlavor> q = new LambdaQueryWrapper<>();
+            q.eq(DishFlavor::getDishId,id);
+            dishFlavorService.remove(q);
+        }
     }
 }
