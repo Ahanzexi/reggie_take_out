@@ -21,7 +21,11 @@ public class CategoryController {
     @Autowired
     private CategoryService categoryService;
 
-
+    /**
+     * 根据type查询分类
+     * @param category
+     * @return
+     */
     @GetMapping("/list")
     public R<List<Category>> list(Category category){
         final LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();

@@ -30,6 +30,10 @@ aliyun:
     accessKeySecret: AXXAvZriCjyEAKk43hQLdwFU47eXos
     bucketName: zzx-talis
 
+#
+reggie:
+  path: D:\img\
+
 # 服务器配置
 server:
   port: 8080
