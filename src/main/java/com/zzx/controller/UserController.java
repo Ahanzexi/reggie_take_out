@@ -2,6 +2,7 @@ package com.zzx.controller;
 
 import com.aliyuncs.utils.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.zzx.common.BaseContext;
 import com.zzx.common.R;
 import com.zzx.entity.User;
 import com.zzx.service.UserService;
@@ -67,6 +68,7 @@ public class UserController {
                 user.setStatus(1);
                 userService.save(user);
             }
+            log.info("登录成功 {}",user.getId());
             session.setAttribute("user",user.getId());
             return R.success(user);
         }

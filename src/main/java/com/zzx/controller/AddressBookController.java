@@ -2,17 +2,15 @@ package com.zzx.controller;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-
 import com.zzx.common.BaseContext;
 import com.zzx.common.R;
 import com.zzx.entity.AddressBook;
 import com.zzx.service.AddressBookService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.util.CollectionUtils;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -30,8 +28,8 @@ public class AddressBookController {
      * 新增
      */
     @PostMapping
-    public R<AddressBook> save(@RequestBody AddressBook addressBook) {
-        addressBook.setUserId(BaseContext.getCurrentId());
+    public R<AddressBook> save(@RequestBody AddressBook addressBook, HttpSession session) {
+        addressBook.setUserId((Long) session.getAttribute("user"));
         log.info("addressBook:{}", addressBook);
         addressBookService.save(addressBook);
         return R.success(addressBook);
@@ -40,11 +38,11 @@ public class AddressBookController {
     /**
      * 设置默认地址
      */
-    @PutMapping("default")
-    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook) {
+    @PutMapping("/default")
+    public R<AddressBook> setDefault(@RequestBody AddressBook addressBook,HttpSession session) {
         log.info("addressBook:{}", addressBook);
         LambdaUpdateWrapper<AddressBook> wrapper = new LambdaUpdateWrapper<>();
-        wrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
+        wrapper.eq(AddressBook::getUserId, session.getAttribute("user"));
         wrapper.set(AddressBook::getIsDefault, 0);
         //SQL:update address_book set is_default = 0 where user_id = ?
         addressBookService.update(wrapper);
@@ -71,7 +69,7 @@ public class AddressBookController {
     /**
      * 查询默认地址
      */
-    @GetMapping("default")
+    @GetMapping("/default")
     public R<AddressBook> getDefault() {
         LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());

@@ -26,8 +26,8 @@ public class MyMateObjectHandler implements MetaObjectHandler {
         metaObject.setValue("createTime", LocalDateTime.now());
         metaObject.setValue("updateTime", LocalDateTime.now());
         Long userId = (Long) request.getSession().getAttribute("employee");
-        metaObject.setValue("createUser", userId);
-        metaObject.setValue("updateUser", userId);
+        metaObject.setValue("createUser", userId==null?1:userId);
+        metaObject.setValue("updateUser", userId==null?1:userId);
     }
 
     /**
@@ -40,6 +40,6 @@ public class MyMateObjectHandler implements MetaObjectHandler {
         log.info(metaObject.toString());
         Long userId = (Long) request.getSession().getAttribute("employee");
         metaObject.setValue("updateTime", LocalDateTime.now());
-        metaObject.setValue("updateUser", userId);
+        metaObject.setValue("updateUser", userId==null?1:userId);
     }
 }
