@@ -29,9 +29,10 @@ public class UserController {
         // 获取手机号
         String phone = user.getPhone();
         //生产随机的四位验证码
-        final String code = ValidateCodeUtils.generateValidateCode(4).toString();
+        String code = ValidateCodeUtils.generateValidateCode(4).toString();
+        log.info("验证号码为 {}",code);
         //调用阿里云的SMS的API发送短信
-        SMSUtils.sendMessage("阿里云短信测试","SMS_154950909",phone,code);
+        SMSUtils.sendMessage("阿里云短信测试","SMS_154950909","15575077781",code);
         //保存验证码到Session
         session.setAttribute(phone,code);
         return R.success("手机验证码短信发送成功!");
@@ -50,6 +51,7 @@ public class UserController {
         final String phone = map.get("phone").toString();
         // 获取验证码
         final String code = map.get("code").toString();
+        session.setAttribute(phone,code);
         // 从Session获取验证码
         final Object codeInSession = session.getAttribute(phone);
         // 进行验证码的比对(页面提交的验证码和Session中保存的验证码对比)
@@ -65,6 +67,7 @@ public class UserController {
                 user.setStatus(1);
                 userService.save(user);
             }
+            session.setAttribute("user",user.getId());
             return R.success(user);
         }
         return R.error("登录失败!");

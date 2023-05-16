@@ -57,11 +57,7 @@ public class EmployeeController {
         // 设置初始密码为123456
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
         // 设置入职时间,与修改时间
-//        employee.setCreateTime(LocalDateTime.now());
-//        employee.setUpdateTime(LocalDateTime.now());
         final long id = (long) req.getSession().getAttribute("employee");
-//        employee.setCreateUser(id);
-//        employee.setUpdateUser(id);
         employeeService.save(employee);
         return R.success("新增员工成功");
     }
