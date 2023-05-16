@@ -116,12 +116,29 @@ public class DishController {
      * @return
      */
     @DeleteMapping
-    public R<String> delete(Long ids){
+    public R<String> delete(Long[] ids){
         log.info("删除菜品 {}",ids);
-        dishService.deleteWithFlavor(ids);
+        for (Long id:ids) {
+            dishService.deleteWithFlavor(id);
+        }
         return R.success("删除菜品成功");
     }
 
-
+    /**
+     * 批量修改状态方法
+     * @param ids
+     * @param status
+     * @return
+     */
+    @PostMapping("/status/{status}")
+    public R<String> status(Long[] ids, @PathVariable Integer status){
+        final Dish dish = new Dish();
+        for (Long id:ids) {
+            dish.setStatus(status);
+            dish.setId(id);
+            dishService.updateById(dish);
+        }
+        return R.success(status==0?"已禁售":"已启售");
+    }
 
 }
