@@ -1,4 +1,4 @@
-package com.zzx.controller;
+package com.zzx.config;
 
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
