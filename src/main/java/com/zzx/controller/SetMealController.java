@@ -131,4 +131,9 @@ public class SetMealController {
         setmealService.updateWithDish(setmealDto);
         return R.success("修改菜品成功!");
     }
+
+    public R<List<DishDto>> list(){
+
+        return null;
+    }
 }

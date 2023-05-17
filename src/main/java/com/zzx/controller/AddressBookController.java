@@ -70,9 +70,9 @@ public class AddressBookController {
      * 查询默认地址
      */
     @GetMapping("/default")
-    public R<AddressBook> getDefault() {
+    public R<AddressBook> getDefault(HttpSession session) {
         LambdaQueryWrapper<AddressBook> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(AddressBook::getUserId, BaseContext.getCurrentId());
+        queryWrapper.eq(AddressBook::getUserId, session.getAttribute("user"));
         queryWrapper.eq(AddressBook::getIsDefault, 1);
 
         //SQL:select * from address_book where user_id = ? and is_default = 1
@@ -89,8 +89,8 @@ public class AddressBookController {
      * 查询指定用户的全部地址
      */
     @GetMapping("/list")
-    public R<List<AddressBook>> list(AddressBook addressBook) {
-        addressBook.setUserId(BaseContext.getCurrentId());
+    public R<List<AddressBook>> list(AddressBook addressBook,HttpSession session) {
+        addressBook.setUserId((Long) session.getAttribute("user"));
         log.info("addressBook:{}", addressBook);
 
         //条件构造器
