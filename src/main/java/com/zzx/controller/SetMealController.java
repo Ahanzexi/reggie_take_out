@@ -7,8 +7,11 @@ import com.zzx.dto.DishDto;
 import com.zzx.dto.SetmealDto;
 import com.zzx.entity.Category;
 import com.zzx.entity.Dish;
+import com.zzx.entity.DishFlavor;
 import com.zzx.entity.Setmeal;
 import com.zzx.service.CategoryService;
+import com.zzx.service.DishFlavorService;
+import com.zzx.service.DishService;
 import com.zzx.service.SetmealService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.BeanUtils;
@@ -16,6 +19,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -27,6 +31,12 @@ public class SetMealController {
 
     @Autowired
     private CategoryService categoryService;
+
+    @Autowired
+    private DishService dishService;
+
+    @Autowired
+    private DishFlavorService dishFlavorService;
     /**
      * 新增套餐
      * @param setmealDto
@@ -135,5 +145,21 @@ public class SetMealController {
     public R<List<DishDto>> list(){
 
         return null;
+    }
+
+    /**
+     * 根据条件查询套餐数据
+     * @param setmeal
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List<Setmeal>> list(Setmeal setmeal){
+        final Long categoryId = setmeal.getCategoryId();
+        final LambdaQueryWrapper<Setmeal> wrapper = new LambdaQueryWrapper<>();
+        wrapper.eq(categoryId!=null,Setmeal::getCategoryId,categoryId);
+        wrapper.eq(Setmeal::getStatus,1);
+        wrapper.orderByDesc(Setmeal::getUpdateTime);
+        final List<Setmeal> list = setmealService.list(wrapper);
+        return R.success(list);
     }
 }

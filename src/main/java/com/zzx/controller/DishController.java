@@ -140,17 +140,46 @@ public class DishController {
         return R.success(status==0?"已禁售":"已启售");
     }
 
+    /**
+     * 根据分类查询菜品
+     * @param dish
+     * @return
+     */
+//    @GetMapping("/list")
+//    public R<List<Dish>> list(Dish dish){
+//        final LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+//        // 根据分类查询
+//        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
+//        // 仅查询起售状态的菜品
+//        queryWrapper.eq(Dish::getStatus,1);
+//        // 排序
+//        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+//        final List<Dish> list = dishService.list(queryWrapper);
+//        return R.success(list);
+//    }
+
     @GetMapping("/list")
-    public R<List<Dish>> list(Dish dish){
-        final LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
-        // 根据分类查询
-        queryWrapper.eq(dish.getCategoryId()!=null,Dish::getCategoryId,dish.getCategoryId());
-        // 仅查询起售状态的菜品
-        queryWrapper.eq(Dish::getStatus,1);
+    public R<List<DishDto>> list(Dish dish){
+        final Long categoryId = dish.getCategoryId();
+        // 根据分类查询菜品
+        final LambdaQueryWrapper<Dish> wrapper = new LambdaQueryWrapper<>();
+        // 筛选分类
+        wrapper.eq(categoryId!=null,Dish::getCategoryId,categoryId);
+        // 筛选 是否启售
+        wrapper.eq(Dish::getStatus,1);
         // 排序
-        queryWrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
-        final List<Dish> list = dishService.list(queryWrapper);
-        return R.success(list);
+        wrapper.orderByAsc(Dish::getSort).orderByDesc(Dish::getUpdateTime);
+        final List<Dish> list = dishService.list(wrapper);
+        List<DishDto> dishDtoList = list.stream().map((item)->{
+            final DishDto dishDto = new DishDto();
+            BeanUtils.copyProperties(item,dishDto);
+            final LambdaQueryWrapper<DishFlavor> q = new LambdaQueryWrapper<>();
+            q.eq(DishFlavor::getDishId,item.getId());
+            final List<DishFlavor> dishFlavorList = dishFlavorService.list(q);
+            dishDto.setFlavors(dishFlavorList);
+            return dishDto;
+        }).collect(Collectors.toList());
+        return R.success(dishDtoList);
     }
 
 }
