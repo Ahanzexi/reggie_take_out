@@ -5,5 +5,5 @@ import com.zzx.entity.Orders;
 import com.zzx.entity.User;
 
 public interface OrderService extends IService<Orders> {
-
+    void submit(Orders orders);
 }
